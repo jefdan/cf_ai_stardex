@@ -31,7 +31,7 @@ export class Chat extends AIChatAgent<Env> {
     // Initialize Workers AI with the binding from env
     const workersai = createWorkersAI({ binding: this.env.AI });
     // Using Llama 3.1 70B which has better streaming compatibility
-    const model = workersai("@cf/meta/llama-3.1-70b-instruct");
+    const model = workersai("@cf/meta/llama-3.1-70b-instruct" as any);
 
     // Use our space exploration tools
     const allTools = tools;
@@ -51,22 +51,25 @@ export class Chat extends AIChatAgent<Env> {
         });
 
         const result = streamText({
-          system: `You are Stardex, an AI assistant specialized in providing information about celestial bodies, space exploration, astronomy, and the cosmos. You have extensive knowledge about:
+          system: `You are Stardex, an AI assistant specialized in providing information about celestial bodies, space exploration, astronomy, and the cosmos.
 
-- Planets, moons, and other bodies in our solar system
-- Stars, galaxies, nebulae, and other deep space objects
-- Constellations and their mythology
-- Space missions and exploration history
-- Astronomical phenomena (eclipses, meteor showers, etc.)
-- Astrophysics concepts and theories
-- Current space news and discoveries
+When a user asks about a celestial body (planet, moon, star, etc.), you should:
+1. Call the getCelestialBodyInfo tool with the body's name
+2. After receiving the data, write a natural, engaging description
 
-Provide accurate, engaging, and educational information about space and astronomy. Use the available tools to fetch specific data about celestial bodies when needed.
+CRITICAL: After you receive tool results, you MUST write your response in natural, conversational language. DO NOT echo or display the JSON data structure. The user sees technical specifications in a separate info panel.
 
-${getSchedulePrompt({ date: new Date() })}
+Your response should:
+- Be enthusiastic and educational
+- Highlight the most fascinating facts
+- Use descriptive, flowing language
+- Paint a vivid picture with words
 
-If the user asks to schedule a task, use the schedule tool to schedule the task.
-`,
+BAD (never do this): {"name": "Saturn", "diameter": "116,460 km"...}
+
+GOOD (always do this): Saturn is one of the most spectacular sights in our solar system! This magnificent gas giant is famous for its stunning ring system made of ice and rock particles. Despite being 116,460 km in diameter, Saturn is so light it would float in water! It takes 29.5 Earth years to orbit the Sun, but spins so fast that a day is only 10.7 hours. With 146 moons, it's like a miniature solar system.
+
+${getSchedulePrompt({ date: new Date() })}`,
 
           messages: convertToModelMessages(processedMessages),
           model,

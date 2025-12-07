@@ -9,10 +9,33 @@ import type { Chat } from "./server";
 import { getCurrentAgent } from "agents";
 import { scheduleSchema } from "agents/schedule";
 
+interface CelestialBody {
+  name: string;
+  type: string;
+  diameter?: string;
+  mass?: string;
+  distanceFromSun?: string;
+  distanceFromEarth?: string;
+  orbitalPeriod?: string;
+  rotationPeriod?: string;
+  moons?: number;
+  atmosphere?: string;
+  description?: string;
+  surfaceTemperature?: string;
+  coreTemperature?: string;
+  age?: string;
+  composition?: string;
+  imageUrl?: string;
+  rightAscension?: string;
+  declination?: string;
+  magnitude?: string;
+  distance?: string;
+}
+
 /**
  * Celestial body information data
  */
-const celestialBodiesData: Record<string, any> = {
+const celestialBodiesData: Record<string, CelestialBody> = {
   mercury: {
     name: "Mercury",
     type: "Planet",
@@ -25,7 +48,13 @@ const celestialBodiesData: Record<string, any> = {
     atmosphere:
       "Extremely thin (traces of oxygen, sodium, hydrogen, helium, potassium)",
     description:
-      "Mercury is the smallest planet in our solar system and the closest to the Sun. It has extreme temperature variations and a heavily cratered surface."
+      "Mercury is the smallest planet in our solar system and the closest to the Sun. It has extreme temperature variations and a heavily cratered surface.",
+    surfaceTemperature: "-173°C to 427°C",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/mercury-messenger-globe-pia15162.jpg",
+    magnitude: "-2.48 to 7.25",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-28° to +28°)"
   },
   venus: {
     name: "Venus",
@@ -38,7 +67,13 @@ const celestialBodiesData: Record<string, any> = {
     moons: 0,
     atmosphere: "Thick, primarily CO₂ with sulfuric acid clouds",
     description:
-      "Venus is the hottest planet in our solar system with surface temperatures around 465°C due to its thick atmosphere creating a runaway greenhouse effect."
+      "Venus is the hottest planet in our solar system with surface temperatures around 465°C due to its thick atmosphere creating a runaway greenhouse effect.",
+    surfaceTemperature: "465°C",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/venus-mariner-10-pia23791.jpg",
+    magnitude: "-4.92 to -2.98",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-28° to +28°)"
   },
   earth: {
     name: "Earth",
@@ -51,7 +86,12 @@ const celestialBodiesData: Record<string, any> = {
     moons: 1,
     atmosphere: "Nitrogen (78%), Oxygen (21%), trace gases",
     description:
-      "Earth is the only known planet to harbor life. It has liquid water on its surface and a protective atmosphere with an ozone layer."
+      "Earth is the only known planet to harbor life. It has liquid water on its surface and a protective atmosphere with an ozone layer.",
+    surfaceTemperature: "-88°C to 58°C (average: 15°C)",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/blue-marble-apollo-17-pia00122.jpg",
+    age: "4.54 billion years",
+    magnitude: "N/A (viewing platform)"
   },
   mars: {
     name: "Mars",
@@ -64,7 +104,13 @@ const celestialBodiesData: Record<string, any> = {
     moons: 2,
     atmosphere: "Thin, primarily CO₂",
     description:
-      "Mars is known as the Red Planet due to iron oxide on its surface. It has the largest volcano in the solar system (Olympus Mons) and evidence of ancient water flow."
+      "Mars is known as the Red Planet due to iron oxide on its surface. It has the largest volcano in the solar system (Olympus Mons) and evidence of ancient water flow.",
+    surfaceTemperature: "-153°C to 20°C",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/mars-full-globe-pia16105.jpg",
+    magnitude: "-2.94 to 1.86",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-28° to +28°)"
   },
   jupiter: {
     name: "Jupiter",
@@ -77,7 +123,12 @@ const celestialBodiesData: Record<string, any> = {
     moons: 95,
     atmosphere: "Hydrogen (90%), Helium (10%)",
     description:
-      "Jupiter is the largest planet in our solar system. It has a Great Red Spot (a massive storm) and strong magnetic fields. Its four largest moons are called the Galilean moons."
+      "Jupiter is the largest planet in our solar system. It has a Great Red Spot (a massive storm) and strong magnetic fields. Its four largest moons are called the Galilean moons.",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/jupiter-marble-pia22946.jpg",
+    magnitude: "-2.94 to -1.66",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-23° to +23°)"
   },
   saturn: {
     name: "Saturn",
@@ -90,7 +141,12 @@ const celestialBodiesData: Record<string, any> = {
     moons: 146,
     atmosphere: "Hydrogen (96%), Helium (3%)",
     description:
-      "Saturn is famous for its spectacular ring system made of ice and rock particles. It's the least dense planet and would float in water if there was an ocean big enough."
+      "Saturn is famous for its spectacular ring system made of ice and rock particles. It's the least dense planet and would float in water if there was an ocean big enough.",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/saturn-farewell-pia21345-16.jpg",
+    magnitude: "-0.55 to 1.17",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-23° to +23°)"
   },
   uranus: {
     name: "Uranus",
@@ -103,7 +159,12 @@ const celestialBodiesData: Record<string, any> = {
     moons: 27,
     atmosphere: "Hydrogen (83%), Helium (15%), Methane (2%)",
     description:
-      "Uranus rotates on its side with an axial tilt of 98 degrees. It has a blue-green color due to methane in its atmosphere and has a system of faint rings."
+      "Uranus rotates on its side with an axial tilt of 98 degrees. It has a blue-green color due to methane in its atmosphere and has a system of faint rings.",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/uranus-voyager2-pia18182.jpg",
+    magnitude: "5.38 to 6.03",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-24° to +24°)"
   },
   neptune: {
     name: "Neptune",
@@ -116,7 +177,12 @@ const celestialBodiesData: Record<string, any> = {
     moons: 14,
     atmosphere: "Hydrogen (80%), Helium (19%), Methane (1%)",
     description:
-      "Neptune is the windiest planet with speeds reaching 2,100 km/h. It has a Great Dark Spot similar to Jupiter's Great Red Spot and appears deep blue due to methane."
+      "Neptune is the windiest planet with speeds reaching 2,100 km/h. It has a Great Dark Spot similar to Jupiter's Great Red Spot and appears deep blue due to methane.",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/neptune-voyager2-pia01492.jpg",
+    magnitude: "7.67 to 8.00",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-23° to +23°)"
   },
   moon: {
     name: "Moon (Luna)",
@@ -128,7 +194,14 @@ const celestialBodiesData: Record<string, any> = {
     rotationPeriod: "27.3 days (tidally locked)",
     atmosphere: "Extremely thin exosphere",
     description:
-      "Earth's only natural satellite. It influences tides and has been visited by humans during the Apollo missions. Always shows the same face to Earth due to tidal locking."
+      "Earth's only natural satellite. It influences tides and has been visited by humans during the Apollo missions. Always shows the same face to Earth due to tidal locking.",
+    surfaceTemperature: "-173°C to 127°C",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/moon-lro-pia13517.jpg",
+    magnitude: "-12.74 (full moon)",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-28.5° to +28.5°)",
+    age: "4.53 billion years"
   },
   sun: {
     name: "Sun",
@@ -140,7 +213,13 @@ const celestialBodiesData: Record<string, any> = {
     age: "4.6 billion years",
     composition: "Hydrogen (73%), Helium (25%), other elements (2%)",
     description:
-      "The Sun is the star at the center of our solar system. It contains 99.86% of the solar system's mass and provides the energy that sustains life on Earth through nuclear fusion."
+      "The Sun is the star at the center of our solar system. It contains 99.86% of the solar system's mass and provides the energy that sustains life on Earth through nuclear fusion.",
+    imageUrl:
+      "https://science.nasa.gov/wp-content/uploads/2023/05/sun-as-seen-by-the-sdo-pia23373.jpg",
+    magnitude: "-26.74",
+    rightAscension: "Varies (0h to 24h)",
+    declination: "Varies (-23.5° to +23.5°)",
+    distance: "149.6 million km from Earth"
   }
 };
 
@@ -165,7 +244,8 @@ const getCelestialBodyInfo = tool({
       return `I don't have detailed information about "${bodyName}" in my database. I have information about: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune, the Moon, and the Sun. Please try one of these.`;
     }
 
-    return JSON.stringify(body, null, 2);
+    // Return structured data for the UI panel
+    return body;
   }
 });
 
